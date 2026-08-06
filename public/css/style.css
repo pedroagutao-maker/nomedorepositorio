@@ -1,0 +1,56 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #102a43;
+}
+
+.app-shell {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px;
+}
+
+.hero {
+    padding: 32px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.content {
+    margin-top: 24px;
+}
+
+.panel {
+    padding: 24px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+button {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #0b69ff;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(0.95);
+}
+
+#usuarioList {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+}
+
+#usuarioList li {
+    padding: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
