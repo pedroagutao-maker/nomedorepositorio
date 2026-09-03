@@ -9,9 +9,18 @@
 </head>
 <body>
 
-    <header style="padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;">
+    <header style="padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
         <h1 style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">PwrGenFORCE⚡</h1>
-        <button class="btn-primary">Novo Treino</button>
+        
+        <!-- Formulário para Registrar Nova Carga (POST) -->
+        <form method="POST" action="" style="display: flex; gap: 10px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px;">
+            <input type="hidden" name="acao" value="novo_treino">
+            <input type="text" name="exercicio" value="Supino Reto" required style="padding: 6px; border-radius: 4px; border: 1px solid #333; background: #111; color: #fff; width: 110px;">
+            <input type="number" step="0.5" name="carga" placeholder="Kg" required style="width: 60px; padding: 6px; border-radius: 4px; border: 1px solid #333; background: #111; color: #fff;">
+            <input type="number" name="repeticoes" placeholder="Reps" required style="width: 60px; padding: 6px; border-radius: 4px; border: 1px solid #333; background: #111; color: #fff;">
+            <input type="date" name="data" value="<?= date('Y-m-d') ?>" required style="padding: 6px; border-radius: 4px; border: 1px solid #333; background: #111; color: #fff;">
+            <button type="submit" class="btn-primary" style="padding: 6px 12px;">Salvar Carga</button>
+        </form>
     </header>
 
     <main style="padding: 20px 40px; display: flex; flex-direction: column; gap: 20px;">
