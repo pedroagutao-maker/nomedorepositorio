@@ -77,6 +77,11 @@
 
     </main>
 
+    <!-- Injeta dados dinâmicos do PHP no JavaScript global -->
+    <script>
+        window.chartLabels = <?= $labels ?? "['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6']" ?>;
+        window.chartData = <?= $cargas ?? "[70, 75, 80, 85, 92, 100]" ?>;
+    </script>
     <script src="/js/main.js"></script>
 </body>
 </html>

@@ -33,7 +33,7 @@ function atualizarDisplayTimer(seg) {
     display.style.color = "#6366f1";
 }
 
-// Função da Calculadora de 1RM (Fórmula de Epley: Peso * (1 + Reps/30))
+// Função da Calculadora de 1RM (Fórmula de Epley)
 function calcular1RM() {
     const peso = parseFloat(document.getElementById('inputPeso').value);
     const reps = parseInt(document.getElementById('inputReps').value);
@@ -49,7 +49,7 @@ function calcular1RM() {
     document.getElementById('resultado1RM').style.color = "#10b981";
 }
 
-// Inicialização do Gráfico Chart.js
+// Inicialização do Gráfico Chart.js com Dados Dinâmicos do PHP
 document.addEventListener('DOMContentLoaded', () => {
     const ctx = document.getElementById('graficoCargas');
 
@@ -57,10 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6'],
+                labels: window.chartLabels || ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6'],
                 datasets: [{
                     label: 'Carga Máxima (kg)',
-                    data: [70, 75, 80, 85, 92, 100],
+                    data: window.chartData || [70, 75, 80, 85, 92, 100],
                     borderColor: '#6366f1',
                     backgroundColor: 'rgba(99, 102, 241, 0.15)',
                     borderWidth: 3,
