@@ -131,33 +131,23 @@
             </div>
         </div>
 
-        <!-- ABA 3: MAPA ANATÔMICO -->
+        <!-- ABA 3: MAPA ANATÔMICO DINÂMICO -->
         <div id="tab-anatomia" class="tab-content">
             <div class="card-glass">
                 <h3>Áreas Musculares Trabalhadas</h3>
-                <p style="color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem;">Status baseado nos registros efetuados no sistema:</p>
+                <p style="color: var(--text-secondary); margin-top: 5px; font-size: 0.9rem;">Status dinâmico baseado no histórico registrado no sistema:</p>
                 
                 <div class="muscle-grid">
-                    <div class="muscle-card worked">
-                        <h4>Peitoral</h4>
-                        <span style="color: var(--success); font-size: 0.8rem;">✓ Ativo (Supino)</span>
-                    </div>
-                    <div class="muscle-card">
-                        <h4>Pernas</h4>
-                        <span style="color: var(--text-secondary); font-size: 0.8rem;">Sem registro</span>
-                    </div>
-                    <div class="muscle-card">
-                        <h4>Costas</h4>
-                        <span style="color: var(--text-secondary); font-size: 0.8rem;">Sem registro</span>
-                    </div>
-                    <div class="muscle-card">
-                        <h4>Ombros</h4>
-                        <span style="color: var(--text-secondary); font-size: 0.8rem;">Sem registro</span>
-                    </div>
-                    <div class="muscle-card">
-                        <h4>Braços</h4>
-                        <span style="color: var(--text-secondary); font-size: 0.8rem;">Sem registro</span>
-                    </div>
+                    <?php foreach ($gruposTrabalhados as $grupo => $trabalhado): ?>
+                        <div class="muscle-card <?= $trabalhado ? 'worked' : '' ?>">
+                            <h4><?= $grupo ?></h4>
+                            <?php if ($trabalhado): ?>
+                                <span style="color: var(--success); font-size: 0.8rem;">✓ Ativo no Histórico</span>
+                            <?php else: ?>
+                                <span style="color: var(--text-secondary); font-size: 0.8rem;">Sem registro</span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
