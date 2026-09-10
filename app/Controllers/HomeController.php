@@ -17,10 +17,20 @@ class HomeController {
             exit;
         }
 
-        // Busca de métricas dinâmicas para os Cards e Tabela
+        // Métricas principais
         $totalTreinos = $treinoModel->getTotalTreinos(1);
         $cargaMaxima = $treinoModel->getCargaMaxima(1, 'Supino Reto');
         $historico = $treinoModel->getHistoricoCompleto(1);
+
+        // Mapeamento dinâmico das áreas trabalhadas
+        $exerciciosRegistrados = array_column($historico, 'exercicio');
+        $gruposTrabalhados = [
+            'Peitoral' => in_array('Supino Reto', $exerciciosRegistrados),
+            'Pernas'   => in_array('Agachamento', $exerciciosRegistrados),
+            'Costas'   => in_array('Levantamento Terra', $exerciciosRegistrados),
+            'Ombros'   => in_array('Desenvolvimento', $exerciciosRegistrados),
+            'Braços'   => false
+        ];
 
         $dadosGrafico = $treinoModel->getEvolucaoCargas(1, 'Supino Reto');
         $labels = json_encode(array_column($dadosGrafico, 'data'));
