@@ -1,3 +1,18 @@
+<?php
+// Fallbacks de segurança para evitar avisos caso as variáveis não cheguem do Controller
+$totalTreinos = $totalTreinos ?? 0;
+$cargaMaxima = $cargaMaxima ?? 0;
+$historico = $historico ?? [];
+$gruposTrabalhados = $gruposTrabalhados ?? [
+    'Peitoral' => false,
+    'Pernas'   => false,
+    'Costas'   => false,
+    'Ombros'   => false,
+    'Braços'   => false
+];
+$labels = $labels ?? '[]';
+$cargas = $cargas ?? '[]';
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -155,8 +170,8 @@
     </main>
 
     <script>
-        window.chartLabels = <?= $labels ?? "[]" ?>;
-        window.chartData = <?= $cargas ?? "[]" ?>;
+        window.chartLabels = <?= $labels ?>;
+        window.chartData = <?= $cargas ?>;
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
