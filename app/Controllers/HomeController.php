@@ -17,13 +17,13 @@ class HomeController {
             exit;
         }
 
-        // Métricas principais
-        $totalTreinos = $treinoModel->getTotalTreinos(1);
-        $cargaMaxima = $treinoModel->getCargaMaxima(1, 'Supino Reto');
-        $historico = $treinoModel->getHistoricoCompleto(1);
+        // Busca de métricas com verificação defensiva
+        $totalTreinos = method_exists($treinoModel, 'getTotalTreinos') ? $treinoModel->getTotalTreinos(1) : 0;
+        $cargaMaxima = method_exists($treinoModel, 'getCargaMaxima') ? $treinoModel->getCargaMaxima(1, 'Supino Reto') : 0;
+        $historico = method_exists($treinoModel, 'getHistoricoCompleto') ? $treinoModel->getHistoricoCompleto(1) : [];
 
-        // Mapeamento dinâmico das áreas trabalhadas
-        $exerciciosRegistrados = array_column($historico, 'exercicio');
+        // Mapeamento dos grupos musculares
+        $exerciciosRegistrados = !empty($historico) ? array_column($historico, 'exercicio') : [];
         $gruposTrabalhados = [
             'Peitoral' => in_array('Supino Reto', $exerciciosRegistrados),
             'Pernas'   => in_array('Agachamento', $exerciciosRegistrados),
@@ -33,8 +33,8 @@ class HomeController {
         ];
 
         $dadosGrafico = $treinoModel->getEvolucaoCargas(1, 'Supino Reto');
-        $labels = json_encode(array_column($dadosGrafico, 'data'));
-        $cargas = json_encode(array_column($dadosGrafico, 'carga'));
+        $labels = json_encode(!empty($dadosGrafico) ? array_column($dadosGrafico, 'data') : []);
+        $cargas = json_encode(!empty($dadosGrafico) ? array_column($dadosGrafico, 'carga') : []);
 
         require_once __DIR__ . '/../Views/home.php';
     }

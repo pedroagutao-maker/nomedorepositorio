@@ -20,7 +20,7 @@ class Treino {
         $stmt->bindParam(':exercicio', $exercicio, PDO::PARAM_STR);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        return $stmt->fetchAll() ?: [];
     }
 
     public function salvarTreino($usuarioId, $exercicio, $carga, $repeticoes, $data) {
@@ -37,7 +37,6 @@ class Treino {
         return $stmt->execute();
     }
 
-    // Retorna o total de treinos registrados
     public function getTotalTreinos($usuarioId = 1) {
         $sql = "SELECT COUNT(*) as total FROM registros_treino WHERE usuario_id = :usuario_id";
         $stmt = $this->db->prepare($sql);
@@ -47,7 +46,6 @@ class Treino {
         return $resultado['total'] ?? 0;
     }
 
-    // Retorna a carga máxima registrada para um exercício
     public function getCargaMaxima($usuarioId = 1, $exercicio = 'Supino Reto') {
         $sql = "SELECT MAX(carga) as max_carga FROM registros_treino WHERE usuario_id = :usuario_id AND exercicio = :exercicio";
         $stmt = $this->db->prepare($sql);
@@ -58,7 +56,6 @@ class Treino {
         return $resultado['max_carga'] ?? 0;
     }
 
-    // Retorna todos os registros para a tabela de histórico
     public function getHistoricoCompleto($usuarioId = 1) {
         $sql = "SELECT id, exercicio, carga, repeticoes, DATE_FORMAT(data_registro, '%d/%m/%Y') as data_formatada 
                 FROM registros_treino 
@@ -67,6 +64,6 @@ class Treino {
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetchAll() ?: [];
     }
 }
