@@ -7,14 +7,23 @@ class Treino {
 
     public function __construct() {
         $this->db = Database::getConnection();
-        // Garante que o PDO vai lançar Exceções em caso de erro SQL
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->criarTabelasAutomaticamente();
     }
 
     private function criarTabelasAutomaticamente() {
         try {
-            // Tabela de Peso Corporal
+            // Tabela de Treinos
+            $sqlTreino = "CREATE TABLE IF NOT EXISTS registros_treino (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                usuario_id INT NOT NULL DEFAULT 1,
+                exercicio VARCHAR(100) NOT NULL,
+                carga DECIMAL(6,2) NOT NULL,
+                repeticoes INT NOT NULL,
+                data_registro DATE NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+            // Tabela de Peso
             $sqlPeso = "CREATE TABLE IF NOT EXISTS peso_corporal (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 usuario_id INT NOT NULL DEFAULT 1,
@@ -23,7 +32,7 @@ class Treino {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
-            // Tabela de Fichas de Treino
+            // Tabela de Fichas
             $sqlFichas = "CREATE TABLE IF NOT EXISTS fichas_treino (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 usuario_id INT NOT NULL DEFAULT 1,
@@ -31,21 +40,14 @@ class Treino {
                 exercicios TEXT NOT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
+            $this->db->exec($sqlTreino);
             $this->db->exec($sqlPeso);
             $this->db->exec($sqlFichas);
-
-            // Popula fichas padrão
-            $stmt = $this->db->query("SELECT COUNT(*) as total FROM fichas_treino");
-            if ($stmt && $stmt->fetch()['total'] == 0) {
-                $sqlSeed = "INSERT INTO fichas_treino (usuario_id, nome_ficha, exercicios) VALUES
-                (1, 'Ficha A - Peito, Ombro e Tríceps', 'Supino Reto, Desenvolvimento, Tríceps Pulley'),
-                (1, 'Ficha B - Costas e Bíceps', 'Levantamento Terra, Puxada Alta, Rosca Direta'),
-                (1, 'Ficha C - Pernas Completo', 'Agachamento, Leg Press, Cadeira Extensora');";
-                $this->db->exec($sqlSeed);
-            }
         } catch (PDOException $e) {
-            // Log do erro ao criar tabelas
-            error_log("Erro ao criar tabelas: " . $e->getMessage());
+            die("<div style='background:#111;color:#ff5555;padding:20px;font-family:sans-serif;'>
+                <h2>Erro na Criação de Tabelas</h2>
+                <p>" . htmlspecialchars($e->getMessage()) . "</p>
+            </div>");
         }
     }
 
@@ -53,30 +55,37 @@ class Treino {
         try {
             $sql = "INSERT INTO registros_treino (usuario_id, exercicio, carga, repeticoes, data_registro) 
                     VALUES (:usuario_id, :exercicio, :carga, :repeticoes, :data_registro)";
-            
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
-            $stmt->bindParam(':exercicio', $exercicio, PDO::PARAM_STR);
-            $stmt->bindParam(':carga', $carga);
-            $stmt->bindParam(':repeticoes', $repeticoes, PDO::PARAM_INT);
-            $stmt->bindParam(':data_registro', $data);
-            return $stmt->execute();
+            return $stmt->execute([
+                ':usuario_id' => $usuarioId,
+                ':exercicio' => $exercicio,
+                ':carga' => $carga,
+                ':repeticoes' => $repeticoes,
+                ':data_registro' => $data
+            ]);
         } catch (PDOException $e) {
-            die("<strong>Erro ao salvar Treino no Banco de Dados:</strong> " . $e->getMessage());
+            die("<div style='background:#111;color:#ff5555;padding:20px;font-family:sans-serif;'>
+                <h2>Erro ao Salvar Treino</h2>
+                <p>" . htmlspecialchars($e->getMessage()) . "</p>
+            </div>");
         }
     }
 
     public function salvarPesoCorporal($usuarioId, $peso, $data) {
         try {
             $sql = "INSERT INTO peso_corporal (usuario_id, peso, data_registro) 
-                    VALUES (:usuario_id, :peso, :data)";
+                    VALUES (:usuario_id, :peso, :data_registro)";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
-            $stmt->bindParam(':peso', $peso);
-            $stmt->bindParam(':data', $data);
-            return $stmt->execute();
+            return $stmt->execute([
+                ':usuario_id' => $usuarioId,
+                ':peso' => $peso,
+                ':data_registro' => $data
+            ]);
         } catch (PDOException $e) {
-            die("<strong>Erro ao salvar Peso Corporal no Banco de Dados:</strong> " . $e->getMessage());
+            die("<div style='background:#111;color:#ff5555;padding:20px;font-family:sans-serif;'>
+                <h2>Erro ao Salvar Peso Corporal</h2>
+                <p>" . htmlspecialchars($e->getMessage()) . "</p>
+            </div>");
         }
     }
 
@@ -86,11 +95,8 @@ class Treino {
                     FROM registros_treino 
                     WHERE usuario_id = :usuario_id AND exercicio = :exercicio 
                     ORDER BY data_registro ASC";
-            
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
-            $stmt->bindParam(':exercicio', $exercicio, PDO::PARAM_STR);
-            $stmt->execute();
+            $stmt->execute([':usuario_id' => $usuarioId, ':exercicio' => $exercicio]);
             return $stmt->fetchAll() ?: [];
         } catch (PDOException $e) {
             return [];
@@ -101,10 +107,9 @@ class Treino {
         try {
             $sql = "SELECT COUNT(*) as total FROM registros_treino WHERE usuario_id = :usuario_id";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
-            $stmt->execute();
-            $resultado = $stmt->fetch();
-            return $resultado['total'] ?? 0;
+            $stmt->execute([':usuario_id' => $usuarioId]);
+            $res = $stmt->fetch();
+            return $res['total'] ?? 0;
         } catch (PDOException $e) {
             return 0;
         }
@@ -114,11 +119,9 @@ class Treino {
         try {
             $sql = "SELECT MAX(carga) as max_carga FROM registros_treino WHERE usuario_id = :usuario_id AND exercicio = :exercicio";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
-            $stmt->bindParam(':exercicio', $exercicio, PDO::PARAM_STR);
-            $stmt->execute();
-            $resultado = $stmt->fetch();
-            return $resultado['max_carga'] ?? 0;
+            $stmt->execute([':usuario_id' => $usuarioId, ':exercicio' => $exercicio]);
+            $res = $stmt->fetch();
+            return $res['max_carga'] ?? 0;
         } catch (PDOException $e) {
             return 0;
         }
@@ -130,8 +133,7 @@ class Treino {
                     FROM registros_treino 
                     WHERE usuario_id = :usuario_id AND data_registro >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute([':usuario_id' => $usuarioId]);
             $res = $stmt->fetch();
             return round(($res['volume'] ?? 0) / 1000, 2);
         } catch (PDOException $e) {
@@ -146,8 +148,7 @@ class Treino {
                     WHERE usuario_id = :usuario_id 
                     ORDER BY data_registro DESC";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute([':usuario_id' => $usuarioId]);
             return $stmt->fetchAll() ?: [];
         } catch (PDOException $e) {
             return [];
@@ -158,8 +159,7 @@ class Treino {
         try {
             $sql = "SELECT * FROM fichas_treino WHERE usuario_id = :usuario_id";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute([':usuario_id' => $usuarioId]);
             return $stmt->fetchAll() ?: [];
         } catch (PDOException $e) {
             return [];
@@ -168,10 +168,9 @@ class Treino {
 
     public function getHistoricoPeso($usuarioId = 1) {
         try {
-            $sql = "SELECT peso, DATE_FORMAT(data_registro, '%d/%m') as data FROM peso_corporal WHERE usuario_id = :usuario_id ORDER BY data_registro ASC";
+            $sql = "SELECT peso, DATE_FORMAT(data_registro, '%d/%m/%Y') as data FROM peso_corporal WHERE usuario_id = :usuario_id ORDER BY data_registro DESC";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute([':usuario_id' => $usuarioId]);
             return $stmt->fetchAll() ?: [];
         } catch (PDOException $e) {
             return [];

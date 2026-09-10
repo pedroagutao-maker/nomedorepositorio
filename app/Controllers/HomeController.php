@@ -10,7 +10,7 @@ class HomeController {
             $acao = $_POST['acao'] ?? '';
 
             if ($acao === 'novo_treino') {
-                $exercicio = $_POST['exercicio'] ?? 'Supino Reto';
+                $exercicio = trim($_POST['exercicio'] ?? 'Supino Reto');
                 $carga = floatval($_POST['carga'] ?? 0);
                 $repeticoes = intval($_POST['repeticoes'] ?? 0);
                 $data = !empty($_POST['data']) ? $_POST['data'] : date('Y-m-d');
@@ -27,7 +27,8 @@ class HomeController {
                 }
             }
 
-            header('Location: /');
+            // Redireciona para evitar re-submissão do formulário
+            header('Location: ' . $_SERVER['REQUEST_URI']);
             exit;
         }
 
@@ -53,4 +54,4 @@ class HomeController {
 
         require_once __DIR__ . '/../Views/home.php';
     }
-}	
+}
