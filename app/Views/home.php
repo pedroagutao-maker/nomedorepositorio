@@ -31,6 +31,41 @@ $cargas = $cargas ?? '[]';
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-card); }
         th { color: var(--text-secondary); font-size: 0.85rem; }
         .ficha-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-card); padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+
+        /* Estilo dos Tooltips explicativos (i) */
+        .info-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: #6366f1;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 11px;
+            line-height: 18px;
+            font-weight: bold;
+            cursor: help;
+            margin-left: 6px;
+            position: relative;
+        }
+        .info-icon:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: normal;
+            width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            z-index: 100;
+            font-weight: normal;
+            border: 1px solid #334155;
+        }
     </style>
 </head>
 <body>
@@ -38,7 +73,7 @@ $cargas = $cargas ?? '[]';
     <header style="padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
         <h1 style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">PwrGenFORCE⚡</h1>
         
-        <form method="POST" action="" style="display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; flex-wrap: wrap;">
+        <form method="POST" action="/" style="display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; flex-wrap: wrap;">
             <input type="hidden" name="acao" value="novo_treino">
             <select name="exercicio" required style="padding: 6px; border-radius: 4px; border: 1px solid #333; background: #111; color: #fff;">
                 <option value="Supino Reto">Supino Reto</option>
@@ -70,21 +105,24 @@ $cargas = $cargas ?? '[]';
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 20px;">
                 <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
                     <span style="color: #aaa; font-size: 0.875rem;">Total de Treinos</span>
+                    <span class="info-icon" data-tooltip="Número total de séries/registros salvos no sistema.">i</span>
                     <h2 style="font-size: 2rem; margin-top: 8px;"><?= $totalTreinos ?></h2>
                 </div>
                 <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
                     <span style="color: #aaa; font-size: 0.875rem;">Carga Máx. (Supino)</span>
+                    <span class="info-icon" data-tooltip="Maior peso (kg) já registrado para o Supino Reto.">i</span>
                     <h2 style="font-size: 2rem; margin-top: 8px;"><?= $cargaMaxima ?> kg</h2>
                 </div>
                 <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
                     <span style="color: #aaa; font-size: 0.875rem;">Volume Semanal</span>
+                    <span class="info-icon" data-tooltip="Tonagem total levantada nos últimos 7 dias (Carga x Repetições / 1000).">i</span>
                     <h2 style="font-size: 2rem; margin-top: 8px; color: #22c55e;"><?= $volumeSemanal ?> t</h2>
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px;">
                 <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
-                    <h3 style="margin-bottom: 12px;">⏱️ Timer de Descanso</h3>
+                    <h3 style="margin-bottom: 12px;">⏱️ Timer de Descanso <span class="info-icon" data-tooltip="Cronômetro regressivo para controlar o descanso entre séries.">i</span></h3>
                     <div style="text-align: center; margin: 15px 0;">
                         <span id="timerDisplay" style="font-size: 2.5rem; font-weight: 700; color: #6366f1;">00:00</span>
                     </div>
@@ -97,7 +135,7 @@ $cargas = $cargas ?? '[]';
                 </div>
 
                 <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
-                    <h3 style="margin-bottom: 12px;">🏋️ Calculadora de 1RM</h3>
+                    <h3 style="margin-bottom: 12px;">🏋️ Calculadora de 1RM <span class="info-icon" data-tooltip="Estimativa da carga máxima para 1 repetição pela Fórmula de Epley: Carga x (1 + Reps/30).">i</span></h3>
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                         <input type="number" id="inputPeso" placeholder="Peso (kg)" style="width: 50%; padding: 8px; border-radius: 4px; border: 1px solid #333; background: #111; color: white;">
                         <input type="number" id="inputReps" placeholder="Reps" style="width: 50%; padding: 8px; border-radius: 4px; border: 1px solid #333; background: #111; color: white;">
@@ -111,7 +149,7 @@ $cargas = $cargas ?? '[]';
             </div>
 
             <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
-                <h3 style="margin-bottom: 16px;">Evolução de Cargas (Supino Reto)</h3>
+                <h3 style="margin-bottom: 16px;">Evolução de Cargas (Supino Reto) <span class="info-icon" data-tooltip="Gráfico com a progressão histórica da carga no Supino Reto ao longo do tempo.">i</span></h3>
                 <div style="position: relative; height: 260px; width: 100%;">
                     <canvas id="graficoCargas"></canvas>
                 </div>
@@ -121,7 +159,7 @@ $cargas = $cargas ?? '[]';
         <!-- ABA 2: FICHAS DE TREINO -->
         <div id="tab-fichas" class="tab-content">
             <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
-                <h3>Rotina de Treinos Pré-Definida</h3>
+                <h3>Rotina de Treinos Pré-Definida <span class="info-icon" data-tooltip="Divisão de treinos por fichas (ABC) para facilitar o acompanhamento na academia.">i</span></h3>
                 <p style="color: #aaa; margin-bottom: 15px; font-size: 0.9rem;">Escolha sua ficha do dia e acompanhe os exercícios recomendados:</p>
                 <?php if (!empty($fichas)): ?>
                     <?php foreach ($fichas as $f): ?>
@@ -139,8 +177,8 @@ $cargas = $cargas ?? '[]';
         <!-- ABA 3: PESO CORPORAL -->
         <div id="tab-peso" class="tab-content">
             <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
-                <h3>Registrar Peso Corporal</h3>
-                <form method="POST" action="" style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
+                <h3>Registrar Peso Corporal <span class="info-icon" data-tooltip="Acompanhe sua evolução corporal (massa muscular / perda de gordura).">i</span></h3>
+                <form method="POST" action="/" style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
                     <input type="hidden" name="acao" value="novo_peso">
                     <input type="number" step="0.1" name="peso_corporal" placeholder="Peso atual (kg)" required style="padding: 8px; border-radius: 4px; border: 1px solid #333; background: #111; color: white;">
                     <input type="date" name="data_peso" value="<?= date('Y-m-d') ?>" required style="padding: 8px; border-radius: 4px; border: 1px solid #333; background: #111; color: white;">
@@ -161,11 +199,11 @@ $cargas = $cargas ?? '[]';
             </div>
         </div>
 
-        <!-- ABA 4: HISTÓRICO COMPLETO + EXPORTAÇÃO CSV -->
+        <!-- ABA 4: HISTÓRICO COMPLETO -->
         <div id="tab-historico" class="tab-content">
             <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                    <h3>Histórico de Registros</h3>
+                    <h3>Histórico de Registros <span class="info-icon" data-tooltip="Todos os registros individuais de carga salvos no banco de dados.">i</span></h3>
                     <button onclick="exportarCSV()" style="padding: 8px 16px; background: #6366f1; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">📥 Baixar Histórico (CSV)</button>
                 </div>
                 <table id="tabelaHistorico">
@@ -189,7 +227,7 @@ $cargas = $cargas ?? '[]';
         <!-- ABA 5: ÁREAS TRABALHADAS -->
         <div id="tab-anatomia" class="tab-content">
             <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
-                <h3>Áreas Musculares Trabalhadas</h3>
+                <h3>Áreas Musculares Trabalhadas <span class="info-icon" data-tooltip="Identifica dinamicamente se o grupo muscular foi exercitado com base nos seus registros.">i</span></h3>
                 <div class="muscle-grid">
                     <?php foreach ($gruposTrabalhados as $grupo => $trabalhado): ?>
                         <div class="muscle-card <?= $trabalhado ? 'worked' : '' ?>">
@@ -214,7 +252,6 @@ $cargas = $cargas ?? '[]';
             event.target.classList.add('active');
         }
 
-        // Timer de Descanso
         let timerInterval;
         function startTimer(seconds) {
             clearInterval(timerInterval);
@@ -236,7 +273,6 @@ $cargas = $cargas ?? '[]';
             document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
         }
 
-        // Calculadora 1RM
         function calcular1RM() {
             let w = parseFloat(document.getElementById('inputPeso').value);
             let r = parseInt(document.getElementById('inputReps').value);
@@ -245,7 +281,6 @@ $cargas = $cargas ?? '[]';
             document.getElementById('resultado1RM').innerText = rm + ' kg';
         }
 
-        // Exportação CSV do Histórico
         function exportarCSV() {
             let rows = [["Data", "Exercicio", "Carga (kg)", "Repeticoes"]];
             let trs = document.querySelectorAll("#tabelaHistorico tbody tr");
@@ -270,7 +305,6 @@ $cargas = $cargas ?? '[]';
             document.body.removeChild(link);
         }
 
-        // Registro de Service Worker para PWA
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js');
         }
@@ -278,4 +312,3 @@ $cargas = $cargas ?? '[]';
     <script src="/js/main.js"></script>
 </body>
 </html>
-
