@@ -6,7 +6,6 @@ class HomeController {
     public function index() {
         $treinoModel = new Treino();
 
-        // Se receber requisição POST, salva o novo treino
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['acao'] === 'novo_treino') {
             $exercicio = $_POST['exercicio'] ?? 'Supino Reto';
             $carga = floatval($_POST['carga']);
@@ -18,7 +17,12 @@ class HomeController {
             exit;
         }
 
-        $dadosGrafico = $treinoModel->getEvolucaoCargas();
+        // Busca de métricas dinâmicas para os Cards e Tabela
+        $totalTreinos = $treinoModel->getTotalTreinos(1);
+        $cargaMaxima = $treinoModel->getCargaMaxima(1, 'Supino Reto');
+        $historico = $treinoModel->getHistoricoCompleto(1);
+
+        $dadosGrafico = $treinoModel->getEvolucaoCargas(1, 'Supino Reto');
         $labels = json_encode(array_column($dadosGrafico, 'data'));
         $cargas = json_encode(array_column($dadosGrafico, 'carga'));
 
