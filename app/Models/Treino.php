@@ -44,10 +44,7 @@ class Treino {
             $this->db->exec($sqlPeso);
             $this->db->exec($sqlFichas);
         } catch (PDOException $e) {
-            die("<div style='background:#111;color:#ff5555;padding:20px;font-family:sans-serif;'>
-                <h2>Erro na Criação de Tabelas</h2>
-                <p>" . htmlspecialchars($e->getMessage()) . "</p>
-            </div>");
+            error_log("Erro na criação de tabelas: " . $e->getMessage());
         }
     }
 
@@ -64,10 +61,8 @@ class Treino {
                 ':data_registro' => $data
             ]);
         } catch (PDOException $e) {
-            die("<div style='background:#111;color:#ff5555;padding:20px;font-family:sans-serif;'>
-                <h2>Erro ao Salvar Treino</h2>
-                <p>" . htmlspecialchars($e->getMessage()) . "</p>
-            </div>");
+            error_log("Erro ao salvar treino: " . $e->getMessage());
+            return false;
         }
     }
 
@@ -82,10 +77,8 @@ class Treino {
                 ':data_registro' => $data
             ]);
         } catch (PDOException $e) {
-            die("<div style='background:#111;color:#ff5555;padding:20px;font-family:sans-serif;'>
-                <h2>Erro ao Salvar Peso Corporal</h2>
-                <p>" . htmlspecialchars($e->getMessage()) . "</p>
-            </div>");
+            error_log("Erro ao salvar peso corporal: " . $e->getMessage());
+            return false;
         }
     }
 
