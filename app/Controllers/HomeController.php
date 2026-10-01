@@ -7,7 +7,7 @@ class HomeController {
         $treinoModel = new Treino();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $acao = $_POST['acao'] ?? '';
+            $acao = $_POST['acao'] ?? ''; if ($_SERVER['REQUEST_METHOD'] === 'POST') { var_dump($_POST); die(); }
 
             if ($acao === 'novo_treino') {
                 $exercicio = trim($_POST['exercicio'] ?? 'Supino Reto');
