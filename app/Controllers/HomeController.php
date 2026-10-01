@@ -15,7 +15,7 @@ class HomeController {
                 $repeticoes = intval($_POST['repeticoes'] ?? 0);
                 $data = !empty($_POST['data']) ? $_POST['data'] : date('Y-m-d');
                 
-                if ($carga > 0 && $repeticoes > 0) {
+                if ($carga > 0 && $repeticoes > 0 && !empty($exercicio)) {
                     $treinoModel->salvarTreino(1, $exercicio, $carga, $repeticoes, $data);
                 }
             } elseif ($acao === 'novo_peso') {

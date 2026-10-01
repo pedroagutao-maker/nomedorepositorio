@@ -192,7 +192,7 @@ $cargas = $cargas ?? '[]';
                     </thead>
                     <tbody>
                         <?php foreach ($historicoPeso as $p): ?>
-                            <tr><td><?= $p['data'] ?></td><td><?= $p['peso'] ?> kg</td></tr>
+                            <tr><td><?= htmlspecialchars($p['data']) ?></td><td><?= htmlspecialchars($p['peso']) ?> kg</td></tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
