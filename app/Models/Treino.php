@@ -68,8 +68,13 @@ class Treino {
 
     public function salvarPesoCorporal($usuarioId, $peso, $data) {
         try {
-            $sql = "INSERT INTO peso_corporal (usuario_id, peso, data_registro) 
-                    VALUES (:usuario_id, :peso, :data_registro)";
+            $this->db->exec("CREATE TABLE IF NOT EXISTS peso_corporal (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                usuario_id INT NOT NULL DEFAULT 1,
+                peso DECIMAL(5,2) NOT NULL,
+                data_registro DATE NOT NULL
+            )");
+            $sql = "INSERT INTO peso_corporal (usuario_id, peso, data_registro) VALUES (:usuario_id, :peso, :data_registro)";
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([
                 ':usuario_id' => $usuarioId,
@@ -77,8 +82,7 @@ class Treino {
                 ':data_registro' => $data
             ]);
         } catch (PDOException $e) {
-            error_log("Erro ao salvar peso corporal: " . $e->getMessage());
-            return false;
+            die('Erro SQL ao salvar peso: ' . htmlspecialchars($e->getMessage()));
         }
     }
 
