@@ -73,7 +73,7 @@ $cargas = $cargas ?? '[]';
     <header style="padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
         <h1 style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">PwrGenFORCE⚡</h1>
         
-        <form method="POST" action="/" style="display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; flex-wrap: wrap;">
+        <form method="POST"  style="display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; flex-wrap: wrap;">
             <input type="hidden" name="acao" value="novo_treino">
             <select name="exercicio" required style="padding: 6px; border-radius: 4px; border: 1px solid #333; background: #111; color: #fff;">
                 <option value="Supino Reto">Supino Reto</option>
@@ -178,7 +178,7 @@ $cargas = $cargas ?? '[]';
         <div id="tab-peso" class="tab-content">
             <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
                 <h3>Registrar Peso Corporal <span class="info-icon" data-tooltip="Acompanhe sua evolução corporal (massa muscular / perda de gordura).">i</span></h3>
-                <form method="POST" action="/" style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
+                <form method="POST"  style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
                     <input type="hidden" name="acao" value="novo_peso">
                     <input type="number" step="0.1" name="peso_corporal" placeholder="Peso atual (kg)" required style="padding: 8px; border-radius: 4px; border: 1px solid #333; background: #111; color: white;">
                     <input type="date" name="data_peso" value="<?= date('Y-m-d') ?>" required style="padding: 8px; border-radius: 4px; border: 1px solid #333; background: #111; color: white;">

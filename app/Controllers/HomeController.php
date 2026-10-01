@@ -19,7 +19,7 @@ class HomeController {
                     $treinoModel->salvarTreino(1, $exercicio, $carga, $repeticoes, $data);
                 }
             } elseif ($acao === 'novo_peso') {
-                $peso = floatval($_POST['peso_corporal'] ?? 0);
+                $peso = floatval(str_replace(',', '.', $_POST['peso_corporal'] ?? 0));
                 $data = !empty($_POST['data_peso']) ? $_POST['data_peso'] : date('Y-m-d');
                 
                 if ($peso > 0) {
