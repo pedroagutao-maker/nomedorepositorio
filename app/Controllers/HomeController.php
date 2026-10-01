@@ -21,6 +21,20 @@ class HomeController {
             } elseif ($acao === 'novo_peso') {
                 $peso = floatval(str_replace(',', '.', $_POST['peso_corporal'] ?? 0));
                 $data = !empty($_POST['data_peso']) ? $_POST['data_peso'] : date('Y-m-d');
+                if ($peso > 0) {
+                    try {
+                        $db = (new \Database())->getConnection();
+                        $db->exec("CREATE TABLE IF NOT EXISTS peso_corporal (id INT AUTO_INCREMENT PRIMARY KEY, usuario_id INT DEFAULT 1, peso DECIMAL(5,2), data_registro DATE)");
+                        $stmt = $db->prepare("INSERT INTO peso_corporal (usuario_id, peso, data_registro) VALUES (1, :peso, :data)");
+                        $stmt->execute([':peso' => $peso, ':data' => $data]);
+                    } catch (\Exception $e) {
+                        error_log("Erro peso: " . $e->getMessage());
+                    }
+                }
+                header('Location: ' . $_SERVER['REQUEST_URI']);
+                exit;
+                $peso = floatval(str_replace(',', '.', $_POST['peso_corporal'] ?? 0));
+                $data = !empty($_POST['data_peso']) ? $_POST['data_peso'] : date('Y-m-d');
                 
                 if ($peso > 0) {
                     $treinoModel->salvarPesoCorporal(1, $peso, $data);
