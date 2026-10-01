@@ -177,8 +177,8 @@ $cargas = $cargas ?? '[]';
         <!-- ABA 3: PESO CORPORAL -->
         <div id="tab-peso" class="tab-content">
             <div class="card-glass" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; border: 1px solid #222;">
-                <h3>Registrar Peso Corporal <span class="info-icon" data-tooltip="Acompanhe sua evolução corporal (massa muscular / perda de gordura).">i</span></h3>
-                <form method="POST"  style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
+                <h3>Registrar Peso Corporal <span class="info-icon" data-tooltip="Acompanhe sua evolução corporal.">i</span></h3>
+                <form method="POST" style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
                     <input type="hidden" name="acao" value="novo_peso">
                     <input type="number" step="0.1" name="peso_corporal" placeholder="Peso atual (kg)" required style="padding: 8px; border-radius: 4px; border: 1px solid #333; background: #111; color: white;">
                     <input type="date" name="data_peso" value="<?= date('Y-m-d') ?>" required style="padding: 8px; border-radius: 4px; border: 1px solid #333; background: #111; color: white;">
@@ -192,13 +192,13 @@ $cargas = $cargas ?? '[]';
                     </thead>
                     <tbody>
                         <?php
-try {
-    $config = require __DIR__ . '/../../config/database.php';
-    $db_view = new PDO("mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8", $config['user'], $config['pass']);
-    $historicoPeso = $db_view->query("SELECT peso, data_registro AS data FROM peso_corporal WHERE usuario_id = 1 ORDER BY data_registro DESC")->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) { $historicoPeso = $historicoPeso ?? []; }
-foreach ($historicoPeso as $p):
-?>
+                        try {
+                            $config = require __DIR__ . '/../../config/database.php';
+                            $db_view = new PDO("mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8", $config['user'], $config['pass']);
+                            $historicoPeso = $db_view->query("SELECT peso, data_registro AS data FROM peso_corporal WHERE usuario_id = 1 ORDER BY data_registro DESC")->fetchAll(PDO::FETCH_ASSOC);
+                        } catch (Exception $e) { $historicoPeso = []; }
+                        foreach ($historicoPeso as $p):
+                        ?>
                             <tr><td><?= htmlspecialchars($p['data']) ?></td><td><?= htmlspecialchars($p['peso']) ?> kg</td></tr>
                         <?php endforeach; ?>
                     </tbody>

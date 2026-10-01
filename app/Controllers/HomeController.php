@@ -32,9 +32,7 @@ class HomeController {
                     }
                 }
                 header('Location: ' . $_SERVER['REQUEST_URI']);
-                exit;
-                $peso = floatval(str_replace(',', '.', $_POST['peso_corporal'] ?? 0));
-                $data = !empty($_POST['data_peso']) ? $_POST['data_peso'] : date('Y-m-d');
+                exit;                $data = !empty($_POST['data_peso']) ? $_POST['data_peso'] : date('Y-m-d');
                 
                 if ($peso > 0) {
                     $treinoModel->salvarPesoCorporal(1, $peso, $data);
