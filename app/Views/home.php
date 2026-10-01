@@ -1,4 +1,26 @@
 <?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['peso_corporal'])) {
+    try {
+        $config = require __DIR__ . '/../../config/database.php';
+        $db = new PDO("mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8", $config['user'], $config['pass']);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        $db->exec("CREATE TABLE IF NOT EXISTS peso_corporal (id INT AUTO_INCREMENT PRIMARY KEY, usuario_id INT DEFAULT 1, peso DECIMAL(5,2), data_registro DATE)");
+        
+        $peso = floatval(str_replace(',', '.', $_POST['peso_corporal']));
+        $data = !empty($_POST['data_peso']) ? $_POST['data_peso'] : date('Y-m-d');
+        
+        if ($peso > 0) {
+            $stmt = $db->prepare("INSERT INTO peso_corporal (usuario_id, peso, data_registro) VALUES (1, :peso, :data)");
+            $stmt->execute([':peso' => $peso, ':data' => $data]);
+            header("Location: " . $_SERVER['REQUEST_URI']);
+            exit;
+        }
+    } catch (Exception $e) {
+        die('Erro SQL ao Salvar Peso: ' . htmlspecialchars($e->getMessage()));
+    }
+}
+?>
 $totalTreinos = $totalTreinos ?? 0;
 $cargaMaxima = $cargaMaxima ?? 0;
 $volumeSemanal = $volumeSemanal ?? 0;
@@ -191,7 +213,14 @@ $cargas = $cargas ?? '[]';
                         <tr><th>Data</th><th>Peso (kg)</th></tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($historicoPeso as $p): ?>
+                        <?php
+try {
+    $config = require __DIR__ . '/../../config/database.php';
+    $db_view = new PDO("mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8", $config['user'], $config['pass']);
+    $historicoPeso = $db_view->query("SELECT peso, data_registro AS data FROM peso_corporal WHERE usuario_id = 1 ORDER BY data_registro DESC")->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) { $historicoPeso = $historicoPeso ?? []; }
+foreach ($historicoPeso as $p):
+?>
                             <tr><td><?= htmlspecialchars($p['data']) ?></td><td><?= htmlspecialchars($p['peso']) ?> kg</td></tr>
                         <?php endforeach; ?>
                     </tbody>
