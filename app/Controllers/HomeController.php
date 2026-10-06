@@ -5,6 +5,9 @@ class HomeController {
     private $treinoModel;
 
     public function __construct() {
+        if (!class_exists('Treino')) {
+            die("Erro critico: A classe Treino nao foi encontrada no Model.");
+        }
         $this->treinoModel = new Treino();
     }
 
