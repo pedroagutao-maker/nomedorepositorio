@@ -1,17 +1,15 @@
-cat << 'EOF' > app/Views/home.php
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PwrGenFORCE — Monitoramento de Treinos</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
     <style>
         body { font-family: Arial, sans-serif; background: #121212; color: #fff; margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; }
         h1, h2 { color: #00ff88; }
         .card { background: #1e1e1e; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .metric { background: #2a2a2a; padding: 15px; border-radius: 6px; text-align: center; }
         .metric h3 { margin: 0; color: #aaa; font-size: 0.9rem; }
         .metric p { margin: 10px 0 0; font-size: 1.5rem; font-weight: bold; color: #00ff88; }
@@ -30,8 +28,7 @@ cat << 'EOF' > app/Views/home.php
     <div class="container">
         <h1>PwrGenFORCE ⚡</h1>
 
-        <!-- Métricas Rápidas -->
-        <div class="grid margin-bottom">
+        <div class="grid">
             <div class="metric">
                 <h3>Total de Treinos</h3>
                 <p><?= $totalTreinos ?? 0 ?></p>
@@ -46,7 +43,6 @@ cat << 'EOF' > app/Views/home.php
             </div>
         </div>
 
-        <!-- Formulário Crítico de Novo Treino -->
         <div class="card">
             <h2>Registrar Novo Treino</h2>
             <form method="POST" action="">
@@ -76,7 +72,6 @@ cat << 'EOF' > app/Views/home.php
             </form>
         </div>
 
-        <!-- Histórico de Treinos -->
         <div class="card">
             <h2>Histórico de Registros</h2>
             <?php if (!empty($historico)): ?>
@@ -107,4 +102,3 @@ cat << 'EOF' > app/Views/home.php
     </div>
 </body>
 </html>
-EOF
