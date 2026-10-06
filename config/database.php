@@ -5,24 +5,22 @@ class Database {
 
     public static function getConnection() {
         if (self::$instance === null) {
-            $host = getenv('DB_HOST') ?: 'localhost';
-            $port = getenv('DB_PORT') ?: '3306';
-            $dbname = getenv('DB_NAME') ?: 'pwrgenforce';
-            $user = getenv('DB_USER') ?: 'root';
+            $host = getenv('DB_HOST') ?: 'db.vcbqkyejpadllldbnpko.supabase.co';
+            $port = getenv('DB_PORT') ?: '5432';
+            $dbname = getenv('DB_NAME') ?: 'postgres';
+            $user = getenv('DB_USER') ?: 'postgres';
             $password = getenv('DB_PASS') ?: '';
 
+            // Driver DSN ajustado para PostgreSQL (pgsql)
+            $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
+
             try {
-                $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
                 self::$instance = new PDO($dsn, $user, $password, [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false,
                 ]);
             } catch (PDOException $e) {
-                die("<div style='background:#111;color:#ff5555;padding:20px;font-family:sans-serif;'>
-                    <h2>Erro Conexão Banco de Dados</h2>
-                    <p><strong>Detalhes:</strong> " . htmlspecialchars($e->getMessage()) . "</p>
-                </div>");
+                die("<h2>Erro de Conexão com o Banco de Dados</h2><p>Detalhes: " . $e->getMessage() . "</p>");
             }
         }
         return self::$instance;
